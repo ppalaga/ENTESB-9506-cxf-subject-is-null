@@ -1,0 +1,26 @@
+= Reproducer code for https://issues.jboss.org/browse/ENTESB-9506
+
+How to use:
+
+1. Change `eapZipPath` and `fuseInstallerPath701` in `run-server.sh`:
++
+[source,shell]
+----
+eapZipPath=...
+fuseInstallerPath701=...
+----
++
+2. Invoke `run-server.sh` and wait till the server starts. This will among other things build and deploy the example.
++
+[source,shell]
+----
+./run-server.sh
+...
+10:19:40,939 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0060: Http management interface listening on http://127.0.0.1:9990/management
+10:19:40,939 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051: Admin console listening on http://127.0.0.1:9990
+10:19:40,940 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 7.1.0.GA (WildFly Core 3.0.10.Final-redhat-1) started in 9444ms - Started 538 of 767 services (359 services are lazy, passive or on-demand)
+----
++
+3. Open a new console and invoke `send-request.sh`
+
+4. Check the output in the `run-server.sh` console.

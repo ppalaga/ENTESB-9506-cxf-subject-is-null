@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Wildfly Camel :: Example :: Camel CXF JAX-WS
+  %%
+  Copyright (C) 2013 - 2016 RedHat
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd         http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean
+        class="com.example.services.interceptor.OdsJAASLoginInterceptor" id="odsJAASLoginInterceptor">
+        <property name="contextName" value="atmis"/>
+        <property name="reportFault" value="true"/>
+    </bean>
+    <!-- CXF Endpoint to expose a HelloWorld web service  -->
+    <cxf:cxfEndpoint
+        address="http://localhost:8080/webservices/helloworld"
+        endpointName="ws:HelloWorld_Port" id="helloWorldConsumer"
+        serviceClass="com.example.services.helloworld.HelloWorldPortType"
+        serviceName="ws:HelloWorld_Service"
+        wsdlURL="classpath:HelloWorld.wsdl" xmlns:ws="http://example.com/services/helloworld">
+        <cxf:properties>
+            <entry key="dataFormat" value="POJO"/>
+            <entry key="schema-validation-enabled" value="true"/>
+            <entry key="ws-security.validate.token" value="false"/>
+            <!-- <entry key="ws-security.callback-handler" value-ref="myPasswordCallback"/> -->
+        </cxf:properties>
+        <cxf:inInterceptors>
+            <ref bean="odsJAASLoginInterceptor"/>
+        </cxf:inInterceptors>
+    </cxf:cxfEndpoint>
+    <!-- HelloWorld web service implementation -->
+    <bean class="com.example.services.helloworld.HelloWorldImpl" id="helloworldImpl"/>
+    <camelContext id="cxfws-camel-context" xmlns="http://camel.apache.org/schema/spring">
+        <!-- Route to start consuming HelloWorld Web service -->
+        <route id="helloWorldRoute">
+            <!-- consume cxf web service -->
+            <!-- invoke Web service backing bean objects -->
+            <from id="cxfHelloWorldConsumer" uri="cxf:bean:helloWorldConsumer"/>
+            <to id="_to1" uri="bean:helloworldImpl"/>
+        </route>
+    </camelContext>
+   <!--  <bean
+        class="com.example.services.interceptor.ServerPasswordCallback" id="myPasswordCallback"/> -->
+</beans>
