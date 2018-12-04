@@ -5,10 +5,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.Subject;
-import javax.security.jacc.PolicyContext;
-import javax.security.jacc.PolicyContextException;
 
-import org.jboss.security.SecurityConstants;
+import org.apache.cxf.message.Message;
+import org.apache.cxf.phase.PhaseInterceptorChain;
+import org.apache.cxf.security.LoginSecurityContext;
+import org.apache.cxf.security.SecurityContext;
 
 import com.example.types.helloworld.FatalErrorList;
 import com.example.types.helloworld.Greeting;
@@ -44,20 +45,13 @@ public class HelloWorldImpl implements HelloWorldPortType {
             throw fatalError;
         }
 
-        Subject subject = null;
-        try {
-            subject = (Subject) PolicyContext.getContext(SecurityConstants.SUBJECT_CONTEXT_KEY);
-
-            if (subject == null) {
-                logger.log(Level.SEVERE, "Policy context not available ");
-                throw new SecurityException("Could not locate policy context");
-            } else {
-                logger.info("Subject:" + subject + " Principal::" + subject.getPrincipals());
-            }
-
-        } catch (final PolicyContextException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Message message = PhaseInterceptorChain.getCurrentMessage();
+        Subject subject = ((LoginSecurityContext) message.get(SecurityContext.class)).getSubject();
+        if (subject == null) {
+            logger.log(Level.SEVERE, "Policy context not available ");
+            throw new SecurityException("Could not locate policy context");
+        } else {
+            logger.info("Subject:" + subject + " Principal::" + subject.getPrincipals());
         }
 
         final Greeting greeting = new Greeting();
