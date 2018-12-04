@@ -31,6 +31,4 @@ mv ${lab}/wfc/standalone/configuration/standalone.xml ${lab}/wfc/standalone/conf
 cp -t ${lab}/wfc/standalone/configuration ${pwDir}/src/atmis-roles.properties ${pwDir}/src/atmis-users.properties ${pwDir}/src/standalone.xml
 cp -t ${lab}/wfc/standalone/deployments ${pwDir}/src/example-camel-cxf-jaxws/target/example-camel.war
 
-${lab}/wfc/bin/add-user.sh -a -u testUser -p testPassword1+ -g testRole
-
 ${lab}/wfc/bin/standalone.sh
