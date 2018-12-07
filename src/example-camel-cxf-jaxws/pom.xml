@@ -54,8 +54,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+        <groupId>org.jboss.ws</groupId>
+        <artifactId>jbossws-api</artifactId>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <repositories>
@@ -73,7 +80,7 @@
   <build>
     <finalName>${project.artifactId}</finalName>
     <plugins>
-      <plugin>
+      <!-- <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
         <version>1.10</version>
@@ -89,7 +96,7 @@
               <wsdlFiles>
                 <wsdlFile>HelloWorld.wsdl</wsdlFile>
               </wsdlFiles>
-              <sourceDestDir>${project.build.directory}/generated-sources/jaxws</sourceDestDir>
+              <sourceDestDir>${basedir}/src/main/java</sourceDestDir>
               <keep>true</keep>
               <xnocompile>true</xnocompile>
               <verbose>true</verbose>
@@ -97,7 +104,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin> -->
       <plugin>
         <groupId>org.wildfly.plugins</groupId>
         <artifactId>wildfly-maven-plugin</artifactId>
@@ -131,7 +138,7 @@
             <manifestEntries>
               <Implementation-Version>0.1</Implementation-Version>
               <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
-              <Dependencies>org.picketbox</Dependencies>
+              <Dependencies>org.apache.cxf,org.jboss.as.webservices.server.integration</Dependencies>
             </manifestEntries>
           </archive>
           <failOnMissingWebXml>false</failOnMissingWebXml>
