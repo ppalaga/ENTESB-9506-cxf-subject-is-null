@@ -19,10 +19,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:cxf="http://camel.apache.org/schema/cxf"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd         http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean
-        class="com.example.services.interceptor.OdsJAASLoginInterceptor" id="odsJAASLoginInterceptor">
+    <bean id="authenticationInterceptor" class="org.apache.cxf.interceptor.security.JAASLoginInterceptor">
         <property name="contextName" value="atmis"/>
-        <property name="reportFault" value="true"/>
+    </bean>
+    <bean class="com.example.services.interceptor.SubjectSettingInterceptor" id="subjectSettingInterceptor" >
+        <property name="securityDomain" value="atmis"/>
     </bean>
     <!-- CXF Endpoint to expose a HelloWorld web service  -->
     <cxf:cxfEndpoint
@@ -38,7 +39,8 @@
             <!-- <entry key="ws-security.callback-handler" value-ref="myPasswordCallback"/> -->
         </cxf:properties>
         <cxf:inInterceptors>
-            <ref bean="odsJAASLoginInterceptor"/>
+            <ref bean="authenticationInterceptor"/>
+            <ref bean="subjectSettingInterceptor"/>
         </cxf:inInterceptors>
     </cxf:cxfEndpoint>
     <!-- HelloWorld web service implementation -->
